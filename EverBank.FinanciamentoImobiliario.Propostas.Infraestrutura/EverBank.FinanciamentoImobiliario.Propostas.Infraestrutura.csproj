@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EverBank.FinanciamentoImobiliario.Propostas.Aplicacao\EverBank.FinanciamentoImobiliario.Propostas.Aplicacao.csproj" />
+    <ProjectReference Include="..\EverBank.FinanciamentoImobiliario.Propostas.Domain\EverBank.FinanciamentoImobiliario.Propostas.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
