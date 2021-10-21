@@ -29,6 +29,7 @@ namespace EverBank.FinanciamentoImobiliario.Propostas.Domain.ValueObjects
             TipoImovel = tipoImovel;
             EstadoImovel = estadoImovel;
             ValorImovel = valorImovel;
+            //Testando
         }
     }
 }
