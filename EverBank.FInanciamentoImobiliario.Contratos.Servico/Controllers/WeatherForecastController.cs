@@ -7,6 +7,11 @@ using Microsoft.Extensions.Logging;
 
 namespace EverBank.FInanciamentoImobiliario.Contratos.Servico.Controllers
 {
+    /// <summary>
+    /// This controller provides weather forecast data for the EverBank Financiamento Imobiliario system.
+    /// It serves as a demo endpoint that returns random weather data for testing and development purposes.
+    /// The controller follows RESTful API design patterns and returns data in JSON format.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastChangedController : ControllerBase
