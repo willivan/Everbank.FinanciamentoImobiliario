@@ -15,6 +15,8 @@ namespace EverBank.FInanciamentoImobiliario.Contratos.Servico
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,6 +27,18 @@ namespace EverBank.FInanciamentoImobiliario.Contratos.Servico
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add CORS policy to allow requests from all origins, headers, and methods
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
+
             services.AddControllers();
         }
 
@@ -39,6 +53,9 @@ namespace EverBank.FInanciamentoImobiliario.Contratos.Servico
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // Use CORS middleware (before UseAuthorization)
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 
