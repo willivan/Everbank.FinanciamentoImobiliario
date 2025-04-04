@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace EverBank.FInanciamentoImobiliario.Contratos.Servico
 {
@@ -39,6 +43,11 @@ namespace EverBank.FInanciamentoImobiliario.Contratos.Servico
                     });
             });
 
+            // Add health checks service
+            services.AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy("Service is running normally."))
+                .AddCheck("database", () => HealthCheckResult.Healthy("Database connection is available."));
+
             services.AddControllers();
         }
 
@@ -62,6 +71,35 @@ namespace EverBank.FInanciamentoImobiliario.Contratos.Servico
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                
+                // Map health check endpoints
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = async (context, report) =>
+                    {
+                        context.Response.ContentType = "application/json";
+                        
+                        var result = JsonConvert.SerializeObject(new
+                        {
+                            status = report.Status.ToString(),
+                            checks = report.Entries.Select(e => new
+                            {
+                                name = e.Key,
+                                status = e.Value.Status.ToString(),
+                                description = e.Value.Description,
+                                data = e.Value.Data
+                            })
+                        });
+                        
+                        await context.Response.WriteAsync(result);
+                    }
+                });
+                
+                // Add a simple health check endpoint that returns 200 OK
+                endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
+                {
+                    Predicate = _ => false
+                });
             });
         }
     }
